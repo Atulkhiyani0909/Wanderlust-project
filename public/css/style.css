@@ -1,0 +1,162 @@
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+.container{
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    flex: 1;
+    
+}
+.navbar{
+   height: 5rem;
+   background-color: #fff;
+}
+
+.fa-compass{
+    font-size: 2rem;
+    color:  #FF5A5F;
+}
+
+.nav-link{
+    
+    color: #222222 !important; 
+    /* !important is used to override the default bootstrap styles */
+}
+
+.nav-link:hover{
+    color: #FF5A5F;
+}
+
+.f-info-links{
+    text-decoration: none;
+    width: 100%;
+}
+.f-info-links a:hover{
+    text-decoration: underline;
+}
+.f-info{
+    display: flex;
+    height: 8rem;
+    background-color: #ebebeb;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.f-info-social{
+    font-size: 1.4rem;
+    width: 100%;
+}
+
+.f-info-social i{
+  margin-right: 0.4rem;
+}
+
+.f-info-social i.fa-brands.fa-square-instagram{
+    color: #c13584;
+}
+.f-info-social i.fa-brands.fa-square-facebook{
+    color: #3b5998;
+}
+.f-info-social i.fa-brands.fa-linkedin{
+    color: #0077b5;
+}
+.f-info-social i.fa-brands.fa-twitter{
+    color: #1da1f2;
+}
+
+
+.card{
+    border: none !important;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+}
+.card-img-top{
+    border-radius: 1rem;
+    width: 100%;
+    object-fit: cover;
+}
+.listing-link{
+    text-decoration: none;
+}
+
+/* card hover effect */
+
+.card-img-overlay{
+    opacity: 0;
+}
+.card-img-overlay:hover{
+    opacity: 0.17;
+    background-color:white;
+}
+
+.btn-primary{
+    background-color: #FF5A5F !important;
+    border: none !important;
+}
+
+
+
+/* show page */
+.show-image{
+    width: 100%;
+    height:30vh;
+}
+
+.btns{
+    display: flex;
+    align-items: center;
+}
+
+.show-card{
+padding-left: 0 !important;
+padding-right: 0 !important;
+}
+
+
+
+.show-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.show-card .card-body {
+  padding: 1.5rem;
+}
+
+.show-card .card-text {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.show-card .card-text b {
+  font-size: 1.25rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.show-card .card-text br {
+  content: "";
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.show-card .card-text :nth-child(3) {
+  font-weight: bold;
+  color: #28a745;
+}
+
+.show-card .card-text :nth-child(5),
+.show-card .card-text :nth-child(7) {
+  color: #6c757d;
+  font-style: italic;
+}
+
