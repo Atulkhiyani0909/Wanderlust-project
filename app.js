@@ -98,9 +98,7 @@ app.delete("/listings/:id", async(req,res)=>{
   const deletedListing= await Listing.findByIdAndDelete(id);
   console.log(deletedListing);
   res.redirect("/listings");
-});
-
-
+}); 
 
 app.listen(port,()=>{
     console.log("App listining");
