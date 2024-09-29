@@ -2,23 +2,31 @@ const express = require('express');
 const app = express();
 const mongoose=require('mongoose');
 const Listing=require('./models/listing');
-const port = 3000;
+const port = 8080;
 const path=require('path');
 const method=require('method-override');
 const ejsMate=require('ejs-mate');
 
+
+// this is for the views folder
 app.set('view engine','ejs');
 app.set('views',path.join(__dirname,'views'));
 
+//this is to get the data from the form to read urlencoded
 app.use(express.urlencoded({extended:true}));
 
+//this is to use the method override
 app.use(method('_method'));
+
+//this is to use the ejs-mate
 app.engine('ejs',ejsMate);
 
-
+//this is to use the public folder
 app.use('/css', express.static(path.join(__dirname, 'public/css')));
-app.use('/css', express.static(path.join(__dirname, 'public/js')));
+app.use('/js', express.static(path.join(__dirname, 'public/js')));
 
+
+//this is to connect to the database
 main().then((res)=>{
     console.log("Connected Successfully");
 }).catch(err => console.log(err));
@@ -48,7 +56,6 @@ app.post("/listings",async (req,res)=>{
   console.log(newListing);
   await Listing.create(newListing);//creating a new listing and saving it to the database
   res.redirect("/listings");
-
 });
 
 
@@ -70,7 +77,7 @@ app.get("/listings/:id/edit",async (req,res)=>{
 
 // update listing route
 app.put("/listings/:id", async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params;//taking id from the url
   
   // Handle image update
   if (req.body.image) {
@@ -80,8 +87,8 @@ app.put("/listings/:id", async (req, res) => {
     }
   }
 
-
-
+  //runValidators is to validate the data before updating it in the database 
+  //new:true is to return the updated listing
   try {
     const listing = await Listing.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
     console.log(listing);
@@ -94,14 +101,21 @@ app.put("/listings/:id", async (req, res) => {
 
 //delete listing route
 app.delete("/listings/:id", async(req,res)=>{
-  const {id}=req.params;
-  const deletedListing= await Listing.findByIdAndDelete(id);
-  console.log(deletedListing);
+  const {id}=req.params;//taking id from the url
+  const deletedListing= await Listing.findByIdAndDelete(id);//deleting the listing by id
+  console.log(deletedListing);//logging the deleted listing
   res.redirect("/listings");
 }); 
 
+
+//error handling middleware for the server
+app.use((err,req,res,next)=>{
+  let {status=500,message="Internal Server Error"}=err;
+  res.status(status).send(message);
+});
+
 app.listen(port,()=>{
-    console.log("App listining");
+    console.log(`App listining on port ${port}`);
 });
 
 

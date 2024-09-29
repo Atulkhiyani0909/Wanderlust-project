@@ -1,36 +1,73 @@
 <%layout("/layout/boilerplate")%>
+
+<!-- we have used novalidate class in form to disable the default HTML5 validation and used our custom Bootstrap validation -->
+<!-- We have added success-faliure client side validation in the input fields -->
 <body>
     <h1 class="text-center">Edit Listing</h1>
     <div class="row">
         <div class="col-md-6 offset-md-3">
-    <form action="/listings/<%= listing._id %>?_method=PUT" method="POST">
+    <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" novalidate class="needs-validation">
         <div class="mb-3">
         <label for="title" class="form-label">Name</label>
         <input type="text" class="form-control" id="title" name="title" value="<%= listing.title %>" required>
-        </div>
+        <div class="valid-feedback">
+            Title Looks Great!
+          </div>
+          <div class="invalid-feedback">
+            Enter a valid title
+          </div>
+    </div>
         <div class="mb-3">
         <label for="description" class="form-label">Description</label>
         <input type="text" class="form-control" id="description" name="description" value="<%= listing.description %>" required>
-        </div>
+        <div class="valid-feedback">
+            Description Looks Great!
+          </div>
+          <div class="invalid-feedback">
+            Enter a short description of the property
+          </div>
+    </div>
         <div class="mb-3">
             <label for="image" class="form-label">Image</label>
             <input type="text" class="form-control" id="image." name="image" value="<%= listing.image.url %>">
             <img src="<%= listing.image.url %>" alt="Current Image" class="img-thumbnail mt-2" style="max-width: 200px;">
+            <div class="valid-feedback">
+                Image Looks Great!
+              </div>
+              <div class="invalid-feedback">
+                Enter a valid image URL
+              </div>
         </div>
         <div class="row">
             <div class="col-md-6">
                 <label for="price" class="form-label">Price</label>
-                <input type="number" class="form-control" id="price" name="price" value="<%= listing.price %>">
+                <input type="number" class="form-control" id="price" name="price" value="<%= listing.price %>" required>
+
+                  <div class="invalid-feedback">
+                    Enter a valid price
+                  </div>
             </div>
             <div class="col-md-6">
             <label for="location" class="form-label">Location</label>   
-        <input type="text" class="form-control" id="location" name="location" value="<%= listing.location %>">
+        <input type="text" class="form-control" id="location" name="location" value="<%= listing.location %>" required>
+        <div class="valid-feedback"> 
+            Great Location! 
         </div>
+        <div class="invalid-feedback">
+            Location should be a valid
+        </div>
+    </div>
         </div>
      <br>
             <div class="mb-3">
             <label for="country" class="form-label">Country</label>
-            <input type="text" class="form-control" id="country" name="country" value="<%= listing.country %>">
+            <input type="text" class="form-control" id="country" name="country" value="<%= listing.country %>" required>
+        <div class="valid-feedback">
+            Great Country! 
+        </div>
+        <div class="invalid-feedback">
+            Country should be a valid
+        </div>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
