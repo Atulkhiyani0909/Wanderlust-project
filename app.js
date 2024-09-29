@@ -7,6 +7,14 @@ const path=require('path');
 const method=require('method-override');
 const ejsMate=require('ejs-mate');
 
+//importing the wrapAsync function
+//that will handle the error from the database
+const wrapAsync=require('./utils/wrapAsync');
+
+//this is to handle the error from the database
+//our own error class now we can custom the error 
+const ExpressError=require('./utils/ExpressError');
+
 
 // this is for the views folder
 app.set('view engine','ejs');
@@ -39,44 +47,52 @@ async function main() {
 
 
 //listing routes
-app.get('/listings',async (req, res) => { 
+app.get('/listings',wrapAsync(async (req, res) => { 
  const allListings=await Listing.find({});
  res.render('listing/index.ejs',{allListings});
   
-});
+}));
 
 //new listing route
-app.get("/listings/new",(req,res)=>{
+app.get("/listings/new",wrapAsync(async (req,res)=>{
   res.render("listing/new.ejs");
-});
+})) ;
 
-//create new listing route
-app.post("/listings",async (req,res)=>{
-  const newListing= req.body;
-  console.log(newListing);
-  await Listing.create(newListing);//creating a new listing and saving it to the database
+//create new listing route 
+//using the wrapAsync function to handle the error from the database
+app.post("/listings", wrapAsync(async (req, res) => {
+  if(!req.body){//our custom message for invalid data 
+    throw new ExpressError("Send a valid data for listing",400);
+  }
+  const newListing = new Listing(req.body);
+  await Listing.create(newListing);
+ 
   res.redirect("/listings");
-});
+}));
 
 
 //show listing route
-app.get("/listings/:id",async (req,res)=>{
+app.get("/listings/:id",wrapAsync(  async (req,res)=>{
     const {id}=req.params;//taking id from the url
     const listing=await Listing.findById(id);
     console.log(listing);//finding the listing by id
    res.render("listing/show.ejs",{listing});//rendering the view
-});
+    })) ;
 
 //edit listing route
-app.get("/listings/:id/edit",async (req,res)=>{
+app.get("/listings/:id/edit",wrapAsync(   async (req,res)=>{
   const {id}=req.params;
   const listing=await Listing.findById(id);
  res.render("listing/edit.ejs",{listing});
-});
+        }));
 
 
 // update listing route
-app.put("/listings/:id", async (req, res) => {
+app.put("/listings/:id",wrapAsync(   async (req, res) => {
+  if(!req.body){//our custom message for invalid data 
+    throw new ExpressError("Send a valid data for listing",400);
+  }
+  
   const { id } = req.params;//taking id from the url
   
   // Handle image update
@@ -97,25 +113,39 @@ app.put("/listings/:id", async (req, res) => {
     console.error("Error updating listing:", error);
     res.status(500).send("Error updating listing");
   }
-});
+}));
 
 //delete listing route
-app.delete("/listings/:id", async(req,res)=>{
+app.delete("/listings/:id",wrapAsync(  async(req,res)=>{
   const {id}=req.params;//taking id from the url
   const deletedListing= await Listing.findByIdAndDelete(id);//deleting the listing by id
   console.log(deletedListing);//logging the deleted listing
   res.redirect("/listings");
-}); 
+})) ; 
+
+
+
+//if the request is not found to  the route define above 
+//then this app.all will handle it and and we can send the custom error message
+app.all('*',(req,res,next)=>{
+  next(new ExpressError("Page Not Found",404));
+});
 
 
 //error handling middleware for the server
+//handling the error form the DataBase 
 app.use((err,req,res,next)=>{
-  let {status=500,message="Internal Server Error"}=err;
-  res.status(status).send(message);
+  let {statusCode=500,message="Internal Server Error"}=err;
+  res.status(statusCode).render("error.ejs",{message,statusCode});
 });
 
 app.listen(port,()=>{
     console.log(`App listining on port ${port}`);
 });
+
+
+//now we have attach the wrapAsync function to the routes 
+//so we don't need to use the try and catch block in the routes
+//and we can handle the error in the wrapAsync function
 
 

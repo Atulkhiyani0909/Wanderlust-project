@@ -3,7 +3,37 @@ body{
     flex-direction: column;
     min-height: 100vh;
     font-family: 'Plus Jakarta Sans', sans-serif !important;
+    /* scrollbar-width:auto; */
+    /* scrollbar-color: #FF5A5F #f1f1f1; */
+}   
+::-webkit-scrollbar {
+    width: 30px;
 }
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #FF5A5F;
+    border-radius: 16px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ff7a7f;
+}
+
+/* For Firefox */
+* {
+    /* scrollbar-width: thin; */
+    scrollbar-color: #FF5A5F #f1f1f1;
+}
+
+/* Smooth scrolling behavior */
+html {
+    scroll-behavior: smooth;
+}
+
 
 .container{
     background-color: #fff;
@@ -159,4 +189,5 @@ padding-right: 0 !important;
   color: #6c757d;
   font-style: italic;
 }
+
 
