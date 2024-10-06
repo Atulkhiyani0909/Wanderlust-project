@@ -7,6 +7,13 @@ const path=require('path');
 const method=require('method-override');
 const ejsMate=require('ejs-mate');
 
+
+//importing the listingSchema from the schema.js file
+//using joi for the validation of the data 
+const {listingSchema}=require('./schema.js');
+const Review=require("./models/review.js");
+
+
 //importing the wrapAsync function
 //that will handle the error from the database
 const wrapAsync=require('./utils/wrapAsync');
@@ -14,6 +21,7 @@ const wrapAsync=require('./utils/wrapAsync');
 //this is to handle the error from the database
 //our own error class now we can custom the error 
 const ExpressError=require('./utils/ExpressError');
+const { Console } = require('console');
 
 
 // this is for the views folder
@@ -46,6 +54,22 @@ async function main() {
 }
 
 
+
+//for the validation of the data
+//using the joi for the validation
+const validateListing= (req,res,next)=>{
+  let {error} =listingSchema.validate(req.body);
+  if(error){
+    const msg=error.details.map(el=>el.message).join(',');
+    throw new ExpressError(error.details[0].message,400);
+  }
+  next();
+}
+
+
+
+
+
 //listing routes
 app.get('/listings',wrapAsync(async (req, res) => { 
  const allListings=await Listing.find({});
@@ -60,13 +84,11 @@ app.get("/listings/new",wrapAsync(async (req,res)=>{
 
 //create new listing route 
 //using the wrapAsync function to handle the error from the database
-app.post("/listings", wrapAsync(async (req, res) => {
-  if(!req.body){//our custom message for invalid data 
-    throw new ExpressError("Send a valid data for listing",400);
-  }
-  const newListing = new Listing(req.body);
-  await Listing.create(newListing);
- 
+//and using the validateListing function to validate the data we get from the form
+app.post("/listings", validateListing, wrapAsync(async (req, res) => {
+  const listingData = req.body.listing || req.body;//this is to get the data from the form 
+  const newListing = new Listing(listingData);
+  await newListing.save();
   res.redirect("/listings");
 }));
 
@@ -82,19 +104,20 @@ app.get("/listings/:id",wrapAsync(  async (req,res)=>{
 //edit listing route
 app.get("/listings/:id/edit",wrapAsync(   async (req,res)=>{
   const {id}=req.params;
+  
   const listing=await Listing.findById(id);
  res.render("listing/edit.ejs",{listing});
         }));
 
 
 // update listing route
-app.put("/listings/:id",wrapAsync(   async (req, res) => {
+app.put("/listings/:id",wrapAsync(async (req, res) => {
   if(!req.body){//our custom message for invalid data 
     throw new ExpressError("Send a valid data for listing",400);
   }
   
   const { id } = req.params;//taking id from the url
-  
+  console.log(req.body);
   // Handle image update
   if (req.body.image) {
     if (typeof req.body.image === 'string') {
@@ -105,9 +128,9 @@ app.put("/listings/:id",wrapAsync(   async (req, res) => {
 
   //runValidators is to validate the data before updating it in the database 
   //new:true is to return the updated listing
-  try {
-    const listing = await Listing.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
-    console.log(listing);
+  //validateListing is to validate the data before updating it in the database 
+ try{
+    const listing = await Listing.findByIdAndUpdate(id, req.body, { new: true,runValidators:true });
     res.redirect(`/listings/${id}`);
   } catch (error) {
     console.error("Error updating listing:", error);
@@ -122,6 +145,26 @@ app.delete("/listings/:id",wrapAsync(  async(req,res)=>{
   console.log(deletedListing);//logging the deleted listing
   res.redirect("/listings");
 })) ; 
+
+
+
+//Reviews 
+//post route
+app.post("/listings/:id/reviews",async (req,res)=>{
+let listing=await Listing.findById(req.params.id);
+
+
+let newReview=new Review(req.body.review);
+console.log(req.body.review);
+
+listing.reviews.push(newReview);
+await newReview.save();
+await listing.save();
+
+res.send("reviews saved");
+});
+
+
 
 
 

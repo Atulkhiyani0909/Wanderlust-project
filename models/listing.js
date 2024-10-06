@@ -1,24 +1,39 @@
-const mongoose=require('mongoose');
-const Schema=mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const listings=new Schema({
-    title:{
-       type:String,
-       required:true,
+const listingSchema = new Schema({
+    title: {
+        type: String,
+        required: true // This is the correct way to make a field required
     },
-
-    description:{
-        type:String,
+    description: {
+        type: String,
+        required: true
     },
-    image:{
-        filename:String,
-        url:String,
+    image: {
+        type: Object,
+        required: true,
+        url: String,
+        filename: String
     },
-    price:Number,
-    location:String,
-
-    country:String,
+    price: {
+        type: Number,
+        required: true
+    },
+    location: {
+        type: String,
+        required: true
+    },
+    country: {
+        type: String,
+        required: true
+    },
+    reviews:[
+        {
+        type:Schema.Types.ObjectId
+        }
+    ]
 });
 
-const Listing=mongoose.model("Listing",listings);
-module.exports=Listing;
+const Listing = mongoose.model('Listing', listingSchema);
+module.exports = Listing;
