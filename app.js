@@ -8,6 +8,10 @@ const method=require('method-override');
 const ejsMate=require('ejs-mate');
 
 
+//requireing listings routes
+const listings=require("./routes/listing.js");
+const reviews=require("./routes/reviews.js");
+
 //importing the listingSchema from the schema.js file
 //using joi for the validation of the data 
 const {listingSchema,reviewSchema}=require('./schema.js');
@@ -43,6 +47,12 @@ app.use('/css', express.static(path.join(__dirname, 'public/css')));
 app.use('/js', express.static(path.join(__dirname, 'public/js')));
 
 
+//for using the listing routes
+app.use("/listings",listings);
+
+
+app.use("/listings/:id/reviews",reviews);
+
 //this is to connect to the database
 main().then((res)=>{
     console.log("Connected Successfully");
@@ -56,138 +66,16 @@ async function main() {
 
 
 
-//for the validation of the data
-//using the joi for the validation
-const validateListing= (req,res,next)=>{
-  let {error} =listingSchema.validate(req.body);
-  if(error){
-    const msg=error.details.map(el=>el.message).join(',');
-    throw new ExpressError(error.details[0].message,400);
-  }
-  next();
-}
-
-
-
-//this is for validating the review schema using the joi 
-//by this we even cannot send the wrong data by Hoppscotch also 
-const validateReview= (req,res,next)=>{
-  let {error} =reviewSchema.validate(req.body);
-  if(error){
-    const msg=error.details.map(el=>el.message).join(',');
-    throw new ExpressError(error.details[0].message,400);
-  }
-  next();
-}
 
 
 
 
 //listing routes
-app.get('/listings',wrapAsync(async (req, res) => { 
- const allListings=await Listing.find({});
- res.render('listing/index.ejs',{allListings});
-  
-}));
-
-//new listing route
-app.get("/listings/new",wrapAsync(async (req,res)=>{
-  res.render("listing/new.ejs");
-})) ;
-
-//create new listing route 
-//using the wrapAsync function to handle the error from the database
-//and using the validateListing function to validate the data we get from the form
-app.post("/listings", validateListing, wrapAsync(async (req, res) => {
-  const listingData = req.body.listing || req.body;//this is to get the data from the form 
-  const newListing = new Listing(listingData);
-  await newListing.save();
-  res.redirect("/listings");
-}));
+//in /routes/listing.js
 
 
-//show listing route
-app.get("/listings/:id",wrapAsync(  async (req,res)=>{
-    const {id}=req.params;//taking id from the url
-    const listing=await Listing.findById(id).populate("reviews");
-    //console.log(listing);//finding the listing by id
-   res.render("listing/show.ejs",{listing});//rendering the view
-    })) ;
-
-//edit listing route
-app.get("/listings/:id/edit",wrapAsync(   async (req,res)=>{
-  const {id}=req.params;
-  
-  const listing=await Listing.findById(id);
- res.render("listing/edit.ejs",{listing});
-        }));
-
-
-// update listing route
-app.put("/listings/:id",wrapAsync(async (req, res) => {
-  if(!req.body){//our custom message for invalid data 
-    throw new ExpressError("Send a valid data for listing",400);
-  }
-  
-  const { id } = req.params;//taking id from the url
-  console.log(req.body);
-  // Handle image update
-  if (req.body.image) {
-    if (typeof req.body.image === 'string') {
-      // If image is a string, assume it's the URL
-      req.body.image = { url: req.body.image, filename: 'ListingImage' };
-    }
-  }
-
-  //runValidators is to validate the data before updating it in the database 
-  //new:true is to return the updated listing
-  //validateListing is to validate the data before updating it in the database 
- try{
-    const listing = await Listing.findByIdAndUpdate(id, req.body, { new: true,runValidators:true });
-    res.redirect(`/listings/${id}`);
-  } catch (error) {
-    console.error("Error updating listing:", error);
-    res.status(500).send("Error updating listing");
-  }
-}));
-
-//delete listing route
-app.delete("/listings/:id",wrapAsync(  async(req,res)=>{
-  const {id}=req.params;//taking id from the url
-  const deletedListing= await Listing.findByIdAndDelete(id);//deleting the listing by id
-  console.log(deletedListing);//logging the deleted listing
-  res.redirect("/listings");
-})) ; 
-
-
-
-//Reviews 
-//post route review
-app.post("/listings/:id/reviews",validateReview,wrapAsync(async (req,res)=>{
-let listing=await Listing.findById(req.params.id);
-
-
-let newReview=new Review(req.body.review);
-console.log(req.body.review);
-
-listing.reviews.push(newReview);
-await newReview.save();
-await listing.save();
-res.redirect(`/listings/${req.params.id}`);
-}));
-
-
-
-//Delete route review
-app.delete("/listings/:id/reviews/:reviewID",wrapAsync(async(req,res)=>{
-  let {id,reviewID}=req.params;
-  console.log(id,reviewID);
-  await Listing.findByIdAndUpdate(id,{$pull:{reviews:reviewID}});//by this we are finding the reviewID in our reviews array of the listing and deleting that review
-  //this will help to delete the id of the comment from the Listing data 
-  let result=await Review.findByIdAndDelete(reviewID);
-  console.log(result);
-  res.redirect(`/listings/${id}`);
-}));
+//all reviews routes 
+//in /routes/reviews.js
 
 
 
