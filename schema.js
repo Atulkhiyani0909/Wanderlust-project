@@ -1,4 +1,5 @@
 const Joi = require('joi');//joi is a library that is used to validate the data 
+const review = require('./models/review');
 
 const listingSchema=Joi.object({
    
@@ -14,3 +15,11 @@ const listingSchema=Joi.object({
 }).required();
 
 module.exports.listingSchema=listingSchema;
+
+
+module.exports.reviewSchema=Joi.object({
+        review: Joi.object({
+                rating:Joi.number().required().min(1).max(5),
+                comment:Joi.string().required(),
+        }).required()
+})

@@ -10,8 +10,9 @@ const ejsMate=require('ejs-mate');
 
 //importing the listingSchema from the schema.js file
 //using joi for the validation of the data 
-const {listingSchema}=require('./schema.js');
+const {listingSchema,reviewSchema}=require('./schema.js');
 const Review=require("./models/review.js");
+
 
 
 //importing the wrapAsync function
@@ -68,6 +69,18 @@ const validateListing= (req,res,next)=>{
 
 
 
+//this is for validating the review schema using the joi 
+//by this we even cannot send the wrong data by Hoppscotch also 
+const validateReview= (req,res,next)=>{
+  let {error} =reviewSchema.validate(req.body);
+  if(error){
+    const msg=error.details.map(el=>el.message).join(',');
+    throw new ExpressError(error.details[0].message,400);
+  }
+  next();
+}
+
+
 
 
 //listing routes
@@ -96,8 +109,8 @@ app.post("/listings", validateListing, wrapAsync(async (req, res) => {
 //show listing route
 app.get("/listings/:id",wrapAsync(  async (req,res)=>{
     const {id}=req.params;//taking id from the url
-    const listing=await Listing.findById(id);
-    console.log(listing);//finding the listing by id
+    const listing=await Listing.findById(id).populate("reviews");
+    //console.log(listing);//finding the listing by id
    res.render("listing/show.ejs",{listing});//rendering the view
     })) ;
 
@@ -149,8 +162,8 @@ app.delete("/listings/:id",wrapAsync(  async(req,res)=>{
 
 
 //Reviews 
-//post route
-app.post("/listings/:id/reviews",async (req,res)=>{
+//post route review
+app.post("/listings/:id/reviews",validateReview,wrapAsync(async (req,res)=>{
 let listing=await Listing.findById(req.params.id);
 
 
@@ -160,10 +173,21 @@ console.log(req.body.review);
 listing.reviews.push(newReview);
 await newReview.save();
 await listing.save();
+res.redirect(`/listings/${req.params.id}`);
+}));
 
-res.send("reviews saved");
-});
 
+
+//Delete route review
+app.delete("/listings/:id/reviews/:reviewID",wrapAsync(async(req,res)=>{
+  let {id,reviewID}=req.params;
+  console.log(id,reviewID);
+  await Listing.findByIdAndUpdate(id,{$pull:{reviews:reviewID}});//by this we are finding the reviewID in our reviews array of the listing and deleting that review
+  //this will help to delete the id of the comment from the Listing data 
+  let result=await Review.findByIdAndDelete(reviewID);
+  console.log(result);
+  res.redirect(`/listings/${id}`);
+}));
 
 
 
