@@ -7,6 +7,36 @@ const path=require('path');
 const method=require('method-override');
 const ejsMate=require('ejs-mate');
 
+const flash=require('connect-flash');
+
+//session 
+const session=require('express-session');
+
+const sessionOptions={
+  secret:"mysecreteoption",
+  resave:false,
+  saveUnintialized:true,
+  cookie:{
+    expires:Date.now()+7*24*60*60*1000,
+    maxAge:7*24*60*60*1000,
+    httpOnly:true,
+  }
+}
+
+
+//using sessions in our project we can confirm by checking it in the inspect cookies we wil see that there is the cookie_sid by which we can cofirm that sessions are being used
+
+app.use(session(sessionOptions));
+app.use(flash());//using for popup message
+
+
+//for message;
+app.use((req,res,next)=>{
+  res.locals.successMsg=req.flash('success');
+  res.locals.errorMsg=req.flash('error');
+  next();
+});
+
 
 //requireing listings routes
 const listings=require("./routes/listing.js");

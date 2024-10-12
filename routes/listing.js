@@ -12,6 +12,8 @@ const ExpressError=require('../utils/ExpressError.js');
 
 
 
+
+
 //for the validation of the data
 //using the joi for the validation
 const validateListing= (req,res,next)=>{
@@ -43,6 +45,7 @@ router.get('/',wrapAsync(async (req, res) => {
      const listingData = req.body.listing || req.body;//this is to get the data from the form 
      const newListing = new Listing(listingData);
      await newListing.save();
+     req.flash("success","New listing created !!!");
      res.redirect("/listings");
    }));
    
@@ -52,14 +55,21 @@ router.get('/',wrapAsync(async (req, res) => {
        const {id}=req.params;//taking id from the url
        const listing=await Listing.findById(id).populate("reviews");
        //console.log(listing);//finding the listing by id
-      res.render("listing/show.ejs",{listing});//rendering the view
+       if(!listing){
+        req.flash("error","Listing you requested doesn't exists");
+        res.redirect("/listings");
+       }
+       res.render("listing/show.ejs",{listing});//rendering the view
        })) ;
    
    //edit listing route
    router.get("/:id/edit",wrapAsync(   async (req,res)=>{
      const {id}=req.params;
-     
      const listing=await Listing.findById(id);
+     if(!listing){
+      req.flash("error","Listing you requested doesn't exists");
+      res.redirect("/listings");
+     }
     res.render("listing/edit.ejs",{listing});
            }));
    
@@ -86,6 +96,7 @@ router.get('/',wrapAsync(async (req, res) => {
      //validateListing is to validate the data before updating it in the database 
     try{
        const listing = await Listing.findByIdAndUpdate(id, req.body, { new: true,runValidators:true });
+       req.flash("success","Listing Updated !!!");
        res.redirect(`/listings/${id}`);
      } catch (error) {
        console.error("Error updating listing:", error);
@@ -98,6 +109,7 @@ router.get('/',wrapAsync(async (req, res) => {
      const {id}=req.params;//taking id from the url
      const deletedListing= await Listing.findByIdAndDelete(id);//deleting the listing by id
      console.log(deletedListing);//logging the deleted listing
+     req.flash("success","Listing Deleted !!!");
      res.redirect("/listings");
    })) ; 
    

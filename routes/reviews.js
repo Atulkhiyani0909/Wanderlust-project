@@ -39,7 +39,8 @@ router.post("/",validateReview,wrapAsync(async (req,res)=>{
     listing.reviews.push(newReview);
     await newReview.save();
     await listing.save();
-    res.redirect(`/listings/${req.params.id}`);
+    req.flash("success","New Review created !!!");
+    res.redirect(`/listings/${req.params.id}`); 
     }));
     
     
@@ -61,6 +62,7 @@ router.post("/",validateReview,wrapAsync(async (req,res)=>{
         
     
         console.log(result);
+        req.flash("success","Review Deleted !!!");
         res.redirect(`/listings/${id}`);
     }));
 
