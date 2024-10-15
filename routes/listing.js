@@ -1,17 +1,11 @@
 const express=require('express');
 
-const router=express.Router();
+const router=express.Router();//express router for routing
 
 const wrapAsync=require('../utils/wrapAsync.js');
 const Listing=require('../models/listing.js');
-const {listingSchema,reviewSchema}=require('../schema.js');
+const {listingSchema,reviewSchema}=require('../schema.js');//validated joi schema required 
 const ExpressError=require('../utils/ExpressError.js');
-
-
-
-
-
-
 
 
 //for the validation of the data
@@ -53,7 +47,8 @@ router.get('/',wrapAsync(async (req, res) => {
    //show listing route
    router.get("/:id",wrapAsync(  async (req,res)=>{
        const {id}=req.params;//taking id from the url
-       const listing=await Listing.findById(id).populate("reviews");
+       const listing=await Listing.findById(id).populate("reviews");//,populate to get the reviews of that listing also 
+
        //console.log(listing);//finding the listing by id
        if(!listing){
         req.flash("error","Listing you requested doesn't exists");
@@ -99,7 +94,7 @@ router.get('/',wrapAsync(async (req, res) => {
        req.flash("success","Listing Updated !!!");
        res.redirect(`/listings/${id}`);
      } catch (error) {
-       console.error("Error updating listing:", error);
+       req.flash("error","Error updating the listing");
        res.status(500).send("Error updating listing");
      }
    }));
@@ -109,7 +104,7 @@ router.get('/',wrapAsync(async (req, res) => {
      const {id}=req.params;//taking id from the url
      const deletedListing= await Listing.findByIdAndDelete(id);//deleting the listing by id
      console.log(deletedListing);//logging the deleted listing
-     req.flash("success","Listing Deleted !!!");
+     req.flash("success","Listing Deleted Successfully !!!");
      res.redirect("/listings");
    })) ; 
    

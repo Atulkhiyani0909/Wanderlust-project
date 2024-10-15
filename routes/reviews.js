@@ -34,6 +34,7 @@ router.post("/",validateReview,wrapAsync(async (req,res)=>{
     
     
     let newReview=new Review(req.body.review);
+    console.log(req.body);
     console.log(req.body.review);
     
     listing.reviews.push(newReview);

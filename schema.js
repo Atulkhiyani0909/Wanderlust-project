@@ -17,6 +17,7 @@ const listingSchema=Joi.object({
 module.exports.listingSchema=listingSchema;
 
 
+// for validating the joi schema for the reviews
 module.exports.reviewSchema=Joi.object({
         review: Joi.object({
                 rating:Joi.number().required().min(1).max(5),

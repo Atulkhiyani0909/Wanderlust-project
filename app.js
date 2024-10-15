@@ -9,17 +9,22 @@ const ejsMate=require('ejs-mate');
 
 const flash=require('connect-flash');
 
-//session 
-const session=require('express-session');
 
+const session=require('express-session');
+const passport=require('passport');
+const LocalStrategy=require('passport-local');
+const User=require('./models/user.js');
+
+
+//session 
 const sessionOptions={
   secret:"mysecreteoption",
   resave:false,
   saveUnintialized:true,
   cookie:{
-    expires:Date.now()+7*24*60*60*1000,
+    expires:Date.now()+7*24*60*60*1000,//in millisecond this is about seven days
     maxAge:7*24*60*60*1000,
-    httpOnly:true,
+    httpOnly:true,//to save from the cross scripting attack
   }
 }
 
@@ -30,6 +35,15 @@ app.use(session(sessionOptions));
 app.use(flash());//using for popup message
 
 
+//using passport
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));//use add local authenticate method in local strategy 
+
+//means that it serialize the user means it stores the user info when there is the  session for the user so user doesn;t want to login again and again and when the sessions overs it info gets deleted from the sessions 
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 //for message;
 app.use((req,res,next)=>{
   res.locals.successMsg=req.flash('success');
@@ -39,8 +53,11 @@ app.use((req,res,next)=>{
 
 
 //requireing listings routes
-const listings=require("./routes/listing.js");
-const reviews=require("./routes/reviews.js");
+const listingRouter=require("./routes/listing.js");
+const reviewsRouter=require("./routes/reviews.js");
+const userRouter=require("./routes/user.js")
+
+
 
 //importing the listingSchema from the schema.js file
 //using joi for the validation of the data 
@@ -56,7 +73,6 @@ const wrapAsync=require('./utils/wrapAsync');
 //this is to handle the error from the database
 //our own error class now we can custom the error 
 const ExpressError=require('./utils/ExpressError');
-const { Console } = require('console');
 
 
 // this is for the views folder
@@ -77,11 +93,26 @@ app.use('/css', express.static(path.join(__dirname, 'public/css')));
 app.use('/js', express.static(path.join(__dirname, 'public/js')));
 
 
-//for using the listing routes
-app.use("/listings",listings);
+// app.get("/demouser",async (req,res)=>{
+// let fakeuser= new User({
+// email:"rohan@getMaxListeners.com",
+// username:"delta"
+// });
+
+// // we have written only email in our schema but we are using the usename and password here because passport add's the username and password by default to the it.
+
+// let userregistered=await User.register(fakeuser,"@helloduniya");//this register  logic is already wriiten by the passport and we don;t need to do anything @helloduniya is our password 
+
+// res.send(userregistered);
+// });
 
 
-app.use("/listings/:id/reviews",reviews);
+
+
+//for using the listing & reviews routes
+app.use("/listings",listingRouter);
+app.use("/listings/:id/reviews",reviewsRouter);
+app.use("/",userRouter);
 
 //this is to connect to the database
 main().then((res)=>{
