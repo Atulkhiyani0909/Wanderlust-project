@@ -48,6 +48,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req,res,next)=>{
   res.locals.successMsg=req.flash('success');
   res.locals.errorMsg=req.flash('error');
+  res.locals.currUser=req.user;//to store the info of the current user
   next();
 });
 
@@ -55,7 +56,7 @@ app.use((req,res,next)=>{
 //requireing listings routes
 const listingRouter=require("./routes/listing.js");
 const reviewsRouter=require("./routes/reviews.js");
-const userRouter=require("./routes/user.js")
+const userRouter=require("./routes/user.js");
 
 
 

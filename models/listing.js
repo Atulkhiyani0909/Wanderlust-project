@@ -35,9 +35,13 @@ const listingSchema = new Schema({
         type:Schema.Types.ObjectId,
         ref: 'Review'
         }
-    ]
+    ],
+    owner:{
+        type:Schema.Types.ObjectId,
+        ref:"User",
+    },
 });
-
+//added owner to listings to authorization
 
 //this is the middleware post which is used to delete the reviews also when that listing has been deleted
 listingSchema.post("findOneAndDelete",async(listing)=>{

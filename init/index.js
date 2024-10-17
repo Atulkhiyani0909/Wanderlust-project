@@ -13,10 +13,9 @@ async function main() {
 }
 
 const intitDB=async ()=>{
-    
-    await Listing.insertMany(initDB.data);
+    initDB.data=initDB.data.map((obj)=>({...obj,owner:"670ea9e22766361aca8eaec0"}));
+        await Listing.insertMany(initDB.data);
     console.log("data inserted");
-    
 }
 
 intitDB();

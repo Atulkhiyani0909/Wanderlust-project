@@ -6,20 +6,9 @@ const wrapAsync=require('../utils/wrapAsync.js');
 const Listing=require('../models/listing.js');
 const {listingSchema,reviewSchema}=require('../schema.js');//validated joi schema required 
 const ExpressError=require('../utils/ExpressError.js');
+const {isLogedIN, isOwner, validateListing}=require("../middleware.js");
 
-
-//for the validation of the data
-//using the joi for the validation
-const validateListing= (req,res,next)=>{
-    let {error} =listingSchema.validate(req.body);
-    if(error){
-      const msg=error.details.map(el=>el.message).join(',');
-      throw new ExpressError(error.details[0].message,400);
-    }
-    next();
-  }
   
-
 
 router.get('/',wrapAsync(async (req, res) => { 
     const allListings=await Listing.find({});
@@ -28,16 +17,22 @@ router.get('/',wrapAsync(async (req, res) => {
    }));
    
    //new listing route
-   router.get("/new",wrapAsync(async (req,res)=>{
+   router.get("/new",isLogedIN,wrapAsync(async (req,res)=>{
+    //isLogedIN as middleware to check whether user is loged in or not 
      res.render("listing/new.ejs");
-   })) ;
+   }));
    
+
+
    //create new listing route 
    //using the wrapAsync function to handle the error from the database
    //and using the validateListing function to validate the data we get from the form
-   router.post("/", validateListing, wrapAsync(async (req, res) => {
-     const listingData = req.body.listing || req.body;//this is to get the data from the form 
-     const newListing = new Listing(listingData);
+   router.post("/", isLogedIN,validateListing, wrapAsync(async (req, res) => {
+     //this is to get the data from the form 
+     console.log(req.body);
+     const newListing = new Listing(req.body);//form data in the req.body
+     
+     newListing.owner=req.user._id;//this is used to store the current user id in the listing owner 
      await newListing.save();
      req.flash("success","New listing created !!!");
      res.redirect("/listings");
@@ -47,18 +42,19 @@ router.get('/',wrapAsync(async (req, res) => {
    //show listing route
    router.get("/:id",wrapAsync(  async (req,res)=>{
        const {id}=req.params;//taking id from the url
-       const listing=await Listing.findById(id).populate("reviews");//,populate to get the reviews of that listing also 
+       const listing=await Listing.findById(id).populate("reviews").populate("owner");//,populate to get the reviews of that listing also 
 
        //console.log(listing);//finding the listing by id
        if(!listing){
         req.flash("error","Listing you requested doesn't exists");
         res.redirect("/listings");
        }
+       console.log(listing);
        res.render("listing/show.ejs",{listing});//rendering the view
        })) ;
    
    //edit listing route
-   router.get("/:id/edit",wrapAsync(   async (req,res)=>{
+   router.get("/:id/edit",isLogedIN,wrapAsync(   async (req,res)=>{
      const {id}=req.params;
      const listing=await Listing.findById(id);
      if(!listing){
@@ -71,7 +67,7 @@ router.get('/',wrapAsync(async (req, res) => {
    
    // update listing route
    
-   router.put("/:id",wrapAsync(async (req, res) => {
+   router.put("/:id",isLogedIN,isOwner,validateListing,wrapAsync(async (req, res) => {
      if(!req.body){//our custom message for invalid data 
        throw new ExpressError("Send a valid data for listing",400);
      }
@@ -100,7 +96,7 @@ router.get('/',wrapAsync(async (req, res) => {
    }));
    
    //delete listing route
-   router.delete("/:id",wrapAsync(  async(req,res)=>{
+   router.delete("/:id",isLogedIN,wrapAsync(  async(req,res)=>{
      const {id}=req.params;//taking id from the url
      const deletedListing= await Listing.findByIdAndDelete(id);//deleting the listing by id
      console.log(deletedListing);//logging the deleted listing
