@@ -42,7 +42,14 @@ router.get('/',wrapAsync(async (req, res) => {
    //show listing route
    router.get("/:id",wrapAsync(  async (req,res)=>{
        const {id}=req.params;//taking id from the url
-       const listing=await Listing.findById(id).populate("reviews").populate("owner");//,populate to get the reviews of that listing also 
+
+       //we are using here nested populate as when we are populating the reviews than we are populating the author in reviews
+       const listing=await Listing.findById(id).populate({
+        path:"reviews",
+        populate:{
+          path:"author",
+        },
+       }).populate("owner");//,populate to get the reviews of that listing also 
 
        //console.log(listing);//finding the listing by id
        if(!listing){
@@ -96,7 +103,7 @@ router.get('/',wrapAsync(async (req, res) => {
    }));
    
    //delete listing route
-   router.delete("/:id",isLogedIN,wrapAsync(  async(req,res)=>{
+   router.delete("/:id",isOwner,isLogedIN,wrapAsync(  async(req,res)=>{
      const {id}=req.params;//taking id from the url
      const deletedListing= await Listing.findByIdAndDelete(id);//deleting the listing by id
      console.log(deletedListing);//logging the deleted listing

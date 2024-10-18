@@ -39,7 +39,8 @@
 </div>
  
 
-    <div class="col-8 offset-2 mb-3">
+<%if(currUser){%>
+<div class="col-8 offset-2 mb-3"></div>
       <hr>
       <h4>Leave a Review</h4>
       <form action="/listings/<%=listing.id%>/reviews" method="post" novalidate class="needs-validation">
@@ -59,6 +60,8 @@
       </div>
       <button type="submit" class="btn btn-outline-dark">Submit</button>
       </form>
+<%}%>
+    
 
       <hr>
       <p><b>All Reviews</b></p>
@@ -66,13 +69,18 @@
       <%for (review of listing.reviews) {%>
        <div class="card col-5 mb-3 ms-3">
         <div class="card-body">
-          <h5 class="card-title">Jane Doe</h5>
+          <h5 class="card-title">@<%=review.author.username%></h5>
           <p class="card-text"><%=review.comment%></p>
           <p class="card-text"><%=review.rating%> stars</p>
         </div>
-        <form  action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST">
+
+        <!-- to check that the currUser is the author of that review -->
+        <%if(currUser && currUser._id.equals(review.author._id)){%>
+        <form  action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST"></form>
           <button class="btn btn-dark btn-sm mb-3">Delete</button>
         </form>
+        <%}%>
+      
        </div>
       <%}%>
     </div>

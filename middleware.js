@@ -1,6 +1,7 @@
 const Listing=require("./models/listing.js");
 const ExpressError=require("./utils/ExpressError.js");
-const {listingSchema}=require("./schema.js");
+const {listingSchema,reviewSchema}=require("./schema.js");
+const Review = require("./models/review.js");
 
 module.exports.isLogedIN=(req,res,next)=>{
 
@@ -44,6 +45,29 @@ module.exports.validateListing= (req,res,next)=>{
   if(error){
     const msg=error.details.map(el=>el.message).join(',');
     throw new ExpressError(error.details[0].message,400);
+  }
+  next();
+}
+
+
+//this is for validating the review schema using the joi 
+//by this we even cannot send the wrong data by Hoppscotch also 
+module.exports.validateReview= (req,res,next)=>{
+  let {error} =reviewSchema.validate(req.body);
+  if(error){
+    const msg=error.details.map(el=>el.message).join(',');
+    throw new ExpressError(error.details[0].message,400);
+  }
+  next();
+}
+
+
+module.exports.isreviewAuthor=async (req,res,next)=>{
+  let {id,reviewId}=req.params;
+  let listing =await Review.findById(reviewId);
+  if(!review.author.equals(res.locals.currUser._id)){
+    req.flash("error","You didn't create This Review");
+    return res.redirect(`/listings/${id}`);
   }
   next();
 }

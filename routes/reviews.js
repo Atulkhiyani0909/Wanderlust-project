@@ -8,36 +8,26 @@ const Listing = require("../models/listing.js");
 
 const {listingSchema,reviewSchema}=require('../schema.js');
 const ExpressError=require('../utils/ExpressError.js');
+const {validateReview}=require("../middleware.js");
+
+const {isLogedIN}=require("../middleware.js");
 
 
-
-
-
-//this is for validating the review schema using the joi 
-//by this we even cannot send the wrong data by Hoppscotch also 
-const validateReview= (req,res,next)=>{
-    let {error} =reviewSchema.validate(req.body);
-    if(error){
-      const msg=error.details.map(el=>el.message).join(',');
-      throw new ExpressError(error.details[0].message,400);
-    }
-    next();
-  }
   
 
 //Reviews 
 //post route review
 
 //common part /listings/:id/reviews
-router.post("/",validateReview,wrapAsync(async (req,res)=>{
+router.post("/",isLogedIN,validateReview,wrapAsync(async (req,res)=>{
     let listing=await Listing.findById(req.params.id);
-    
-    
     let newReview=new Review(req.body.review);
     console.log(req.body);
     console.log(req.body.review);
     
     listing.reviews.push(newReview);
+    newReview.author=req.user._id;//to store that the current user is the author of that review
+    console.log(newReview);
     await newReview.save();
     await listing.save();
     req.flash("success","New Review created !!!");
