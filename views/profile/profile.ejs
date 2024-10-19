@@ -1,0 +1,35 @@
+<%layout("/layout/boilerplate")%>
+
+<body>
+  <div class="card  profile">
+    <div class="row g-0 align-items-center">
+      <div class="col-md-4">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu9zuWJ0xU19Mgk0dNFnl2KIc8E9Ch0zhfCg&s" alt="profile_img" class="img_profile">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title d-inline"><span class="" style="font-weight: bolder;">User : </span><%=user.username%> <br><br> <span class="" style="font-weight: bolder;">E-mail : </span> <%=user.email%></h5>
+        </div>
+      </div>
+    </div>
+    <h2><span class="badge text-bg-secondary m-2">Your Listing's</span></h2>
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 m-2">
+      <% for(let list of listings){ %>
+          <a href="/listings/<%=list._id%>" class="listing-link"> 
+              <div class="card listing-card" >
+                
+              <img src="<%= list.image.url %>" class="card-img-top" alt="Listing Image" height="220px">
+  
+              <div class="card-body">
+                <p class="card-text">
+                  <b><%=list.title%></b>
+                  <br>
+                  <i class="fa-solid fa-location-dot"></i> <%=list.location%>, <%=list.country%>
+                  </p>
+                </div> 
+              </div>    
+           </a>
+      <% } %>
+  </div>
+  </div>
+</body>

@@ -5,34 +5,8 @@ body{
     font-family: 'Plus Jakarta Sans', sans-serif !important;
     /* scrollbar-width:auto; */
     /* scrollbar-color: #FF5A5F #f1f1f1; */
+    background-color: #FFFFFF;
 }   
-::-webkit-scrollbar {
-    width: 30px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #FF5A5F;
-    border-radius: 16px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #ff7a7f;
-}
-
-/* For Firefox */
-* {
-    /* scrollbar-width: thin; */
-    scrollbar-color: #FF5A5F #f1f1f1;
-}
-
-/* Smooth scrolling behavior */
-html {
-    scroll-behavior: smooth;
-}
 
 
 .container{
@@ -188,4 +162,23 @@ padding-right: 0 !important;
 .show-card .card-text :nth-child(7) {
   color: #6c757d;
   font-style: italic;
+}
+
+
+.profile{
+    width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.img_profile{
+   border-radius: 50%;
+   margin: 13px;
+   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+
+@media screen and (max-width: 600px) {
+    .img_profile {
+        width: 100px;
+        height: 100px;
+    }
 }

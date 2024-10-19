@@ -57,7 +57,7 @@ app.use((req,res,next)=>{
 const listingRouter=require("./routes/listing.js");
 const reviewsRouter=require("./routes/reviews.js");
 const userRouter=require("./routes/user.js");
-
+const profileRouter=require("./routes/profile.js");
 
 
 //importing the listingSchema from the schema.js file
@@ -114,6 +114,7 @@ app.use('/js', express.static(path.join(__dirname, 'public/js')));
 app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewsRouter);
 app.use("/",userRouter);
+app.use("/user",profileRouter);
 
 //this is to connect to the database
 main().then((res)=>{

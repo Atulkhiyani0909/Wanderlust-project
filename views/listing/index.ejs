@@ -3,7 +3,7 @@
 <body>
     <h1>All Listings</h1>
 
-   <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+   <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 m-2">
     <% for(let listing of allListings){ %>
         <a href="/listings/<%=listing._id%>" class="listing-link"> 
             <div class="card listing-card" >
@@ -17,7 +17,7 @@
               <p class="card-text">
                 <b><%=listing.title%></b>
                 <br>
-               <i class="fa-solid fa-indian-rupee-sign"></i> <%=listing.price.toLocaleString()%> /night
+               <i class="fa-solid fa-indian-rupee-sign" style="color: blue;"></i> <%=listing.price.toLocaleString()%> /night
                 <br>
                 <i class="fa-solid fa-location-dot"></i> <%=listing.location%>, <%=listing.country%>
                 </p>
