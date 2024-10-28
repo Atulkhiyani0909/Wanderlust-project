@@ -1,87 +1,91 @@
 <style>
-  .btn-search {
-    background: #fe424d;
-    color: #fff;
-    border-radius: 25px;
-    padding: 0 1rem;
-  }
-  .btn-search:hover {
-    background: #fe424d;
-    color: #fff;
-  }
-  .btn-search i {
-    margin-right: 0.5rem;
-  }
-  .search-input {
-    
-    border-radius: 25px;
-    padding: 0.5rem 2rem; /* Reduced padding for smaller screens */
-    font-size: 0.9rem;
-    width: 500px; /* Default width */
-  }
-  @media (max-width: 776px) {
-    .search-input {
-      width: 150px; /* Smaller width on small screens */
-      font-size: 8.3px;
-    }
-    .navbar-collapse{
-    background: #fff;
-    border-radius: 3%;
-    padding: 1rem;
-  }
-  }
-  .navbar-toggler {
-    background-color: #ffff; /* Background color for toggle button */
-  }
-  .navbar-toggler:focus {
-    outline: none; /* Remove outline */
-  }
-  .navbar.open {
-    background-color: #f0f0f0; /* Background color when navbar is open */
-  }
-  .navbar-nav {
-    margin-left: 1rem; /* Adjust spacing for the Explore link */
-  }
-
+ .btn-search {
+            height: 2.6rem;
+            background: #fe424d;
+            color: #fff;
+            border-radius: 25px;
+            padding: 0 1rem;
+        }
+        .btn-search:hover {
+            background: #fe424d;
+            color: #fff;
+        }
+        .btn-search i {
+            margin-right: 0.5rem;
+        }
+        .search-input {
+            border-radius: 25px;
+            padding: 0.5rem 1rem; /* Adjust padding for smaller screens */
+            font-size: 0.9rem;
+            width: 350px; /* Default width for larger screens */
+        }
+        @media (max-width: 500px) {
+            .search-input {
+              font-size: 0.6rem;
+              height: 2.5rem;
+                width: 50%; /* Adjust width on small screens */
+                padding: 0.5rem; /* Adjust padding for a better appearance */
+            }
+            .btn-search {
+              
+              height: 2.2rem;
+                padding: 0.3rem 1rem; /* Adjust padding for button */
+            }
+            .navbar-collapse {
+                background: #fff;
+                border-radius: 3%;
+                padding: 1rem;
+            }
+        }
+        .navbar-toggler {
+          margin-left: 0.5rem;
+            background-color: #fff; /* Background color for toggle button */
+        }
+        .navbar-toggler:focus {
+            outline: none; /* Remove outline */
+        }
+        .navbar.open {
+            background-color: #f0f0f0; /* Background color when navbar is open */
+        }
+        .navbar-nav {
+            margin-left: 1rem; /* Adjust spacing for the Explore link */
+        }
 </style>
 
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top" id="navbar">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
+  <div class="container-fluid d-flex align-items-center">
+      <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
 
-    <div class="d-flex align-items-center  ms-auto">
-      <!-- Search form -->
-      <form class="d-flex me-2" role="search" action="/search" method="GET"> 
-        <input class="form-control me-2 search-input" type="search" name="query" placeholder="Search Destination" aria-label="Search"> 
-        <button class="btn-search btn" type="submit">
-          <i class="fa-solid fa-magnifying-glass"></i>Search
-        </button>
+      <form class="d-flex me-2 align-items-center" role="search" action="/search" method="GET"> 
+          <input class="form-control me-2 search-input" type="search" name="query" placeholder="Search Destination" aria-label="Search"> 
+          <button class="btn-search btn" type="submit">
+              <i class="fa-solid fa-magnifying-glass"></i>Search
+          </button>
       </form>
 
       <!-- Toggle button on the right of the search box -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" onclick="toggleNavbar()">
-        <span class="navbar-toggler-icon"></span>
+          <span class="navbar-toggler-icon"></span>
       </button>
-    </div>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <div class="navbar-nav ms-auto">
-        <!-- User links for login/signup/logout -->
-        <li class="nav-item">
-          <a class="nav-link" href="/listings/new">Your home</a>
-        </li>
-        <% if (!currUser) { %>
-          <a href="/signup" class="nav-link"><b>SignUp</b></a>
-          <a href="/login" class="nav-link"><b>LogIn</b></a>
-        <% } %>
-        <% if (currUser) { %>
-          <a href="/user/profile" class="nav-link">Profile</a>
-          <a href="/logout" class="nav-link"><b>LogOut</b></a>
-        <% } %>
+      <div class="collapse navbar-collapse" id="navbarNav">
+          <div class="navbar-nav ms-auto">
+              <li class="nav-item">
+                  <a class="nav-link" href="/listings/new">Your home</a>
+              </li>
+              <% if (!currUser) { %>
+                  <a href="/signup" class="nav-link"><b>SignUp</b></a>
+                  <a href="/login" class="nav-link"><b>LogIn</b></a>
+              <% } %>
+              <% if (currUser) { %>
+                  <a href="/user/profile" class="nav-link">Profile</a>
+                  <a href="/logout" class="nav-link"><b>LogOut</b></a>
+              <% } %>
+          </div>
       </div>
-    </div>
   </div>
 </nav>
+
 
 <script>
   function toggleNavbar() {
