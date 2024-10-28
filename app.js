@@ -17,13 +17,33 @@ const flash=require('connect-flash');
 
 
 const session=require('express-session');
+const MongoStore=require('connect-mongo');
 const passport=require('passport');
 const LocalStrategy=require('passport-local');
 const User=require('./models/user.js');
 
 
+
+
+const dburl=process.env.ATLASDB_URL;
+
+//MongoSession to store the data in online server
+
+const store=MongoStore.create({
+  mongoUrl:dburl,
+  crypto:{
+    secret:"mysecreteoption",
+  },
+  touchAfter:24*3600,
+});
+
+store.on("error",()=>{
+  console.log("Error in MongoSEssion Store ",err);
+})
+
 //session 
 const sessionOptions={
+  store,
   secret:"mysecreteoption",
   resave:false,
   saveUnintialized:true,
@@ -33,7 +53,6 @@ const sessionOptions={
     httpOnly:true,//to save from the cross scripting attack
   }
 }
-
 
 //using sessions in our project we can confirm by checking it in the inspect cookies we wil see that there is the cookie_sid by which we can cofirm that sessions are being used
 
@@ -123,7 +142,7 @@ app.use("/",userRouter);
 app.use("/user",profileRouter);
 
 
-const dburl=process.env.ATLASDB_URL;
+
 
 //this is to connect to the database
 main().then((res)=>{

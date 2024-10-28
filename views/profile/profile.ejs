@@ -1,35 +1,74 @@
-<%layout("/layout/boilerplate")%>
+<% layout("/layout/boilerplate") %>
 
 <body>
-  <div class="card  profile">
-    <div class="row g-0 align-items-center">
-      <div class="col-md-4">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu9zuWJ0xU19Mgk0dNFnl2KIc8E9Ch0zhfCg&s" alt="profile_img" class="img_profile">
-      </div>
-      <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title d-inline"><span class="" style="font-weight: bolder;">User : </span><%=user.username%> <br><br> <span class="" style="font-weight: bolder;">E-mail : </span> <%=user.email%></h5>
+  <div class="container">
+    <div class="card profile shadow-sm">
+      <div class="row g-0 align-items-center">
+        <div class="col-md-4 text-center">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu9zuWJ0xU19Mgk0dNFnl2KIc8E9Ch0zhfCg&s" alt="profile_img" class="img_profile img-fluid">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title d-inline" style="font-weight: bolder;">User: <%= user.username %></h5>
+            <br><br>
+            <h6 class="card-subtitle mb-2 text-muted" style="font-weight: bolder;">E-mail: <%= user.email %></h6>
+          </div>
         </div>
       </div>
     </div>
-    <h2><span class="badge text-bg-secondary m-2">Your Listing's</span></h2>
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 m-2">
-      <% for(let list of listings){ %>
-          <a href="/listings/<%=list._id%>" class="listing-link"> 
-              <div class="card listing-card" >
-                
-              <img src="<%= list.image.url %>" class="card-img-top" alt="Listing Image" height="220px">
-  
-              <div class="card-body">
-                <p class="card-text">
-                  <b><%=list.title%></b>
-                  <br>
-                  <i class="fa-solid fa-location-dot"></i> <%=list.location%>, <%=list.country%>
-                  </p>
-                </div> 
-              </div>    
-           </a>
+    <h2 class="mt-4 mb-3 text-center">
+      <span class="badge text-bg-secondary fs-5 px-4 py-2" style="border-radius: 30px; font-weight: bold;">
+        Your Listings
+      </span>
+    </h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-2">
+      <% for(let list of listings) { %>
+        <a href="/listings/<%= list._id %>" class="listing-link"> 
+          <div class="card listing-card shadow-sm">
+            <img src="<%= list.image.url %>" class="card-img-top" alt="Listing Image" height="220px">
+            <div class="card-body">
+              <p class="card-text">
+                <b><%= list.title %></b>
+                <br>
+                <i class="fa-solid fa-location-dot"></i> <%= list.location %>, <%= list.country %>
+              </p>
+            </div> 
+          </div>    
+        </a>
       <% } %>
-  </div>
+    </div>
   </div>
 </body>
+
+<style>
+  .card-body{
+    padding: 1rem;
+  }
+  .profile {
+    margin-top: 2rem; /* Space from top */
+    background-color: #f8f9fa; /* Light background for profile */
+    border-radius: 10px; /* Rounded corners */
+  }
+  .img_profile {
+    border-radius: 50%; /* Round profile image */
+    width: 80px; /* Decrease width */
+    height: 80px; /* Decrease height */
+    object-fit: cover; /* Maintain aspect ratio */
+    border: 3px solid grey; /* Border around the profile image */
+  }
+  .listing-link {
+    text-decoration: none; /* Remove underline from links */
+  }
+  .listing-card {
+    transition: transform 0.2s, box-shadow 0.2s; /* Smooth scaling and shadow effect */
+    border-radius: 10px; /* Rounded corners for listing cards */
+  }
+  .listing-card:hover {
+    transform: scale(1.05); /* Scale effect on hover */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Shadow effect on hover */
+  }
+  .badge {
+    background-color: grey; /* Custom background color for badge */
+    color: white; /* White text for badge */
+  }
+</style>
