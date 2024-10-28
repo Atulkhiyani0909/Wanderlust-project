@@ -132,7 +132,9 @@ app.use('/js', express.static(path.join(__dirname, 'public/js')));
 // res.send(userregistered);
 // });
 
-
+app.get("/",(req,res)=>{
+res.redirect("/listings");
+});
 
 
 //for using the listing & reviews routes
