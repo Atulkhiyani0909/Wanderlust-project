@@ -17,3 +17,34 @@
       }, false)
     })
   })()
+
+
+
+  
+   async function map(location) { 
+    let url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=geojson`; 
+    try {
+        let res = await fetch(url);
+        let data = await res.json();
+        
+        // Check if data.features is not empty
+        if (data.features.length > 0) {
+            const lat1 = data.features[0].geometry.coordinates[1];
+            const long1 = data.features[0].geometry.coordinates[0];
+            map = new mappls.Map('map', { center: { lat: lat1, lng: long1 } });
+            var marker = new mappls.Marker({
+                map: map,
+                position: { "lat": lat1, "lng": long1 }
+            });
+
+        
+        } else {
+            console.log("No location data found.");
+            map = new mappls.Map('map', { center: { lat: 0, lng: 0 } });
+        }
+    } catch (err) {
+        map = new mappls.Map('map', { center: { lat: 0, lng: 0 } });
+        console.log(err);
+    }
+} 
+

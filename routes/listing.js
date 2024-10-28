@@ -8,6 +8,12 @@ const {listingSchema,reviewSchema}=require('../schema.js');//validated joi schem
 const ExpressError=require('../utils/ExpressError.js');
 const {isLogedIN, isOwner, validateListing}=require("../middleware.js");
 
+const multer  = require('multer');
+const {storage}=require('../cloudConfig.js');
+const upload = multer({ storage });
+
+
+
 //this controller is the type of the MVC which makes the code more compact
   const listingController=require("../controller/listings.js");
 
@@ -22,10 +28,13 @@ router.route("/")
    //and using the validateListing function to validate the data we get from the form
    
 .post(
-   isLogedIN,validateListing, 
+   isLogedIN,
+   upload.single('image'), //this is of the cloudinary multer to store the img 
+  validateListing,
    wrapAsync(listingController.createListingdata)
   );   
   
+
   
    //new listing route
    router.get("/new",isLogedIN,wrapAsync(listingController.renderNewForm));
@@ -39,7 +48,9 @@ router.route("/")
     .get(wrapAsync(listingController.showListings))
 
  // update listing route
-    .put(isLogedIN,isOwner,validateListing,wrapAsync(listingController.updateListingData))
+    .put(isLogedIN,isOwner,
+      upload.single('image'),
+      validateListing,wrapAsync(listingController.updateListingData))
 //delete listing route
     .delete(isOwner,isLogedIN,wrapAsync(listingController.destroyListing)) ; 
    

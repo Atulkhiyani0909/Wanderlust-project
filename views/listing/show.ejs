@@ -15,7 +15,7 @@
             <br>
             <p class="card-text"><%= listing.description %></p>
             <br>
-            <p class="card-text"><i class="fa-solid fa-indian-rupee-sign" style="color: blue;"></i> <%= listing.price.toLocaleString() %> /night </p>
+            <p class="card-text"><i class="fa-solid fa-indian-rupee-sign" style="color: blue;"></i> <%= listing.price.toLocaleString() %> /night&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <i>**Exclusive of taxes</i></p>
             <br>
             <p class="card-text"><i class="fa-solid fa-location-dot"></i>&ensp;&nbsp;<%= listing.location %>, <%= listing.country %> </p>
             <br>
@@ -38,6 +38,11 @@
 </div>
 </div>
  
+<h2 style="text-align: center; margin-bottom: 20px;">Where You'll be</h2>
+<div class="map-container" style="display: flex; justify-content: center; align-items: center; height: 500px;">
+  
+  <div id="map"style="height: 100%; width: 100%; max-width:500px; max-height:350px"></div>
+</div>
 
 <%if(currUser){%>
   <div class="col-8 offset-2">
@@ -103,7 +108,16 @@
       </div>
       </div>
     
-   
+
+      <script>
+      
+      //TO call the map function to display it 
+        // Call the map function after the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const location = "<%= listing.location %>"; // Pass the location to the map function
+            map(location); // Call your map function with the location
+        });
+    </script>
 </body>
 
 </html>

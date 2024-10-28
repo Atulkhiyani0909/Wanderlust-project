@@ -1,3 +1,9 @@
+//this is used as we want our key only in development phase not in the production phase  when we deploy our project because this is the confidential information
+if(process.env.NODE_ENV !="production"){
+  require('dotenv').config();
+}
+
+
 const express = require('express');
 const app = express();
 const mongoose=require('mongoose');
@@ -116,13 +122,17 @@ app.use("/listings/:id/reviews",reviewsRouter);
 app.use("/",userRouter);
 app.use("/user",profileRouter);
 
+
+const dburl=process.env.ATLASDB_URL;
+
 //this is to connect to the database
 main().then((res)=>{
     console.log("Connected Successfully");
 }).catch(err => console.log(err));
 
 async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/wanderlust');
+  //now our data is in online db
+  await mongoose.connect(dburl);
 
   // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
 }

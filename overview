@@ -1,0 +1,61 @@
+**Technologies Used**
+=====================
+
+### Frontend
+* EJS (Embedded JavaScript) templating engine
+* CSS for styling
+* HTML for structuring
+* JavaScript for client-side scripting
+* Font Awesome for icons
+
+### Backend
+* Node.js as the runtime environment
+* Express.js as the web framework
+* MongoDB as the NoSQL database
+* Mongoose as the Object Data Modeling (ODM) library
+* Passport.js for authentication
+* Dotenv for environment variable management
+* Multer for handling multipart/form-data requests (image uploads)
+
+### Image Upload
+* Multer for parsing multipart/form-data requests
+* Cloudinary for image storage and management (optional)
+
+###Deployment
+now for the deployment we are using the MongoAtlas for making our data avaliable to the online 
+MongoAtlas
+username - atulkhiyani
+password - Gj5Q2iVr0fAQzOTp
+DB link - mongodb+srv://atulkhiyani:<db_password>@cluster0.ot7u1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+### Validation
+* Joi for input validation
+
+
+### Middlewares
+* method-override middleware for overriding HTTP methods
+* connect-flash middleware for flash messaging
+* express-session middleware for session management
+* passport.initialize() and passport.session() middleware for authentication
+* ejsMate middleware for EJS templating engine
+* dotenv middleware for environment variable management
+
+### User Tracking
+* Cookies: We utilized cookies to store and manage user data, enabling efficient tracking and personalized experiences.
+* Sessions: In conjunction with cookies, we employed sessions to maintain user state and ensure seamless interactions throughout the application.
+
+### Locals
+* res.locals: We utilized res.locals to make certain variables accessible throughout the application, enabling efficient data sharing and management across different routes and templates.
+
+
+
+###Error handling
+* Custom Error Class: We implemented a custom error class to handle and manage errors in a more structured and efficient way.
+* WrapAsync: We utilized the WrapAsync function to handle asynchronous errors and ensure that our application remains stable and error-free.
+
+
+**Project Overview**
+This project utilizes a full-stack approach, leveraging Node.js, Express.js, and MongoDB to create a robust and scalable application, with EJS templating and CSS styling for a dynamic frontend, and Multer for efficient image upload handling.
+
+
+

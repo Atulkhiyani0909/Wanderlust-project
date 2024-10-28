@@ -1,12 +1,153 @@
 <!-- this is because of the ejs-mate -->
 <%layout("/layout/boilerplate")%>
-<body>
-    <h1>All Listings</h1>
+<style>
+    #filters{
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .filter{
+        opacity: 0.7;
+        margin: 1rem;
+        
+        align-items: center;
+    }
+    .filter:hover{
+        opacity: 1;
+    }
+    .filter p{
+        font-size: 0.9rem;
+        align-items: center;
+    }
+    .icon {
+        display: flex; /* Added to center icon */
+        justify-content: center; /* Center icon horizontally */
+        margin-bottom: 0.5rem; /* Space between icon and text */
+    }
+    /* Media queries for responsiveness */
+    
+   
+    /* ... existing styles ... */
+    @media (max-width: 768px) {
+        #filters {
+            display: flex;
+            flex-direction: row; /* Change direction to row */
+            align-items: center; /* Center icons vertically */
+        }
+        .filter {
+            margin: 0.5rem; /* Adjust margin as needed */
+        }
+        #tax-toggle {
+        height: 2rem !important; /* Decrease height of the button on small screens */
+        width: 11rem !important; /* Optionally adjust width */
+        font-size: 0.6rem; /* Optionally adjust font size */
+    }
+    }
+    @media (max-width: 480px) {
+        #filters {
+            max-height: none; /* Remove max height to show all filters */
+        }
+        .filter {
+            flex: 0 0 auto; /* Allow filters to wrap to next line */
+        }
+    }
+    /* ... existing styles ... */
 
+
+    .taxes{
+        display: none;
+    }
+    #tax-toggle{
+        border: 1px solid black;
+        border-radius: 1rem;
+        height: 3.5rem;
+        padding: 1rem;
+        margin-left: 5rem;
+        display: flex;
+        align-items: center;
+        box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+    }
+</style>
+<body>
+    <div id="filters">
+        <div class="filter">
+            <div class="icon">
+                <i class="fa-solid fa-fire"></i>
+            </div>
+            <p>Trending</p>
+        </div>
+        <div class="filter">
+            <div class="icon">
+                <i class="fa-solid fa-bed"></i>
+            </div>
+            <p>Rooms</p>
+        </div>
+        <div class="filter">
+            <!-- Removed extra nested filter div -->
+            <div class="icon">
+                <i class="fa-solid fa-mountain-city"></i>
+            </div>
+            <p>Iconic Cities</p>
+        </div>
+        <div class="filter">
+            <div class="icon">
+                <i class="fa-solid fa-mountain"></i>
+            </div>
+            <p>Mountains</p>
+        </div>
+        <div class="filter">
+            <div class="icon">
+                <i class="fa-solid fa-place-of-worship"></i>
+            </div>
+            <p>Royal</p>
+        </div>
+        <div class="filter">
+            <div class="icon">
+                <i class="fa-solid fa-person-swimming"></i>
+            </div>
+            <p>Pools</p>
+        </div>
+        <div class="filter">
+            <div class="icon">
+                <i class="fa-solid fa-snowflake"></i>
+            </div>
+            <p>Artic</p>
+        </div>
+        <div class="filter">
+            <div class="icon">
+                <i class="fa-solid fa-tractor"></i>
+            </div>
+            <p>Farms</p>
+        </div>
+        <div class="filter">
+            <div class="icon">
+                <i class="fa-solid fa-landmark"></i>
+            </div>
+            <p>Historical</p>
+        </div>
+        <div class="filter">
+            <div class="icon">
+                <i class="fa-solid fa-tree"></i>
+            </div>
+            <p>Island</p>
+        </div>
+        <div class="filter">
+            <div class="icon">
+                <i class="fa-solid fa-bell-concierge"></i>
+            </div>
+            <p>Luxe</p>
+        </div>
+       
+        <div id="tax-toggle">
+        <div class="form-check-reverse form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" >
+            <label class="form-check-label" for="flexSwitchCheckDefault">Display total after Taxes</label>
+          </div>
+        </div>
+    </div>
    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 m-2">
     <% for(let listing of allListings){ %>
         <a href="/listings/<%=listing._id%>" class="listing-link"> 
-            <div class="card listing-card" >
+            <div class="card listing-card" data-price="<%= listing.price %>">
                 
             <img src="<%= listing.image.url %>" class="card-img-top" alt="Listing Image" height="220px">
                           <div class="card-img-overlay">
@@ -17,9 +158,11 @@
               <p class="card-text">
                 <b><%=listing.title%></b>
                 <br>
-               <i class="fa-solid fa-indian-rupee-sign" style="color: blue;"></i> <%=listing.price.toLocaleString()%> /night
-                <br>
+               <i class="fa-solid fa-indian-rupee-sign" style="color: blue;"></i> <b><%=listing.price.toLocaleString()%> /night</b>
+               &nbsp;&nbsp;<span class="taxes">+18% GST</span>
+               <br>
                 <i class="fa-solid fa-location-dot"></i> <%=listing.location%>, <%=listing.country%>
+               
                 </p>
             </div>
         </div>
@@ -33,3 +176,23 @@
 
 
 </html>
+
+<script>
+    
+    let taxing = document.getElementById('flexSwitchCheckDefault');
+    taxing.addEventListener('click', () => {
+        let taxes = document.getElementsByClassName('taxes');
+        let prices = document.querySelectorAll('.listing-card'); 
+        for (let i = 0; i < prices.length; i++) {
+            let price = parseFloat(prices[i].getAttribute('data-price')); // Get data-price from the current card and convert to number
+            let totalPrice = price + (price * 0.18); // Calculate total price with 18% tax
+            
+            if (taxes[i].style.display != 'inline') {
+                taxes[i].textContent = `Total : ₹${totalPrice.toLocaleString()} /night`; // Update text to show total price with tax
+                taxes[i].style.display = 'inline'; // Show the tax information
+            } else {
+                taxes[i].style.display = 'none'; // Hide the tax information
+            }
+        }
+    });
+</script>

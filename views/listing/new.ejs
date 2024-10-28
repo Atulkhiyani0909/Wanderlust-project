@@ -4,8 +4,12 @@
 <body>
     <h1 class="text-center">Create New Listing</h1><br>
     <!-- novalidate is to disable the default validation of the browser we are using our own validation Bootstrap -->
-    <form method="POST" action="/listings" novalidate class="needs-validation">
-        <div class="row">
+    <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
+      <!-- now our currform is set to the urlencoded data but we are changing it to the multipart/form-data -->
+       <!--this entype=multipart/form-data is capable of sending the files to the backend  -->
+      
+
+       <div class="row">
           <div class="col-8 offset-2">
             <div class="mb-3">
               <label for="title" class="form-label">Title</label>
@@ -28,7 +32,6 @@
                 Description is required
               </div>
             </div>
-
 
             <div class="row">
             <div class="mb-3 col-md-4">
@@ -58,8 +61,8 @@
             </div>
             
             <div class="mb-3">
-              <label for="image" class="form-label">Image URL</label>
-              <input type="url" class="form-control" id="image" name="image" required>
+              <label for="image" class="form-label">Upload Listing Image</label>
+              <input type="file" class="form-control" id="image" name="image" required>
               <div class="invalid-feedback">
                 Image is required
               </div>
