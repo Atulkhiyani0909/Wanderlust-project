@@ -19,45 +19,52 @@
             font-size: 0.9rem;
             width: 350px; /* Default width for larger screens */
         }
-        @media (max-width: 500px) {
+        @media (min-width: 300px) and (max-width: 670px) {
             .search-input {
               font-size: 0.6rem;
               height: 2.5rem;
-                width: 50%; /* Adjust width on small screens */
+                width: 60%; /* Adjust width on small screens */
                 padding: 0.5rem; /* Adjust padding for a better appearance */
             }
             .btn-search {
-              
+             width: 4rem; 
               height: 2.2rem;
                 padding: 0.3rem 1rem; /* Adjust padding for button */
             }
             .navbar-collapse {
-                background: #fff;
-                border-radius: 3%;
+                
+                background:#fff;
                 padding: 1rem;
+                border-radius: 3%;
             }
+            .d-flex {
+        flex-direction: row; /* Stack elements vertically on small screens */
+    }
         }
         .navbar-toggler {
-          margin-left: 0.5rem;
+          margin-left:0;
+          
             background-color: #fff; /* Background color for toggle button */
         }
         .navbar-toggler:focus {
-            outline: none; /* Remove outline */
+            outline: none;
+             /* Remove outline */
         }
         .navbar.open {
-            background-color: #f0f0f0; /* Background color when navbar is open */
+            background-color: #faf4f4; /* Background color when navbar is open */
         }
         .navbar-nav {
             margin-left: 1rem; /* Adjust spacing for the Explore link */
         }
+
 </style>
 
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top" id="navbar">
   <div class="container-fluid d-flex align-items-center">
       <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
 
-      <form class="d-flex me-2 align-items-center" role="search" action="/search" method="GET"> 
-          <input class="form-control me-2 search-input" type="search" name="query" placeholder="Search Destination" aria-label="Search"> 
+      <form class="d-flex me-2 align-items-center" role="search" action="/listings/search" method="post"> 
+          <input class="form-control me-2 search-input" type="search" name="query" placeholder="Search City" aria-label="Search"> 
           <button class="btn-search btn" type="submit">
               <i class="fa-solid fa-magnifying-glass"></i>Search
           </button>

@@ -61,6 +61,12 @@ router.route("/")
    router.get("/:id/edit",isLogedIN,wrapAsync(listingController.editListingForm));
    
    
-  
+  router.post("/search",async (req,res)=>{
+     let Searchcity=req.body.query;
+     Searchcity = Searchcity.charAt(0).toUpperCase() + Searchcity.slice(1).toLowerCase();
+     let allListings=await Listing.find({location:Searchcity});
+     console.log(allListings);
+     res.render("listing/index.ejs",{allListings});
+  });
   
    module.exports=router;
