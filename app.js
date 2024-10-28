@@ -32,7 +32,7 @@ const dburl=process.env.ATLASDB_URL;
 const store=MongoStore.create({
   mongoUrl:dburl,
   crypto:{
-    secret:"mysecreteoption",
+    secret:process.env.SECRET,
   },
   touchAfter:24*3600,
 });
@@ -44,7 +44,7 @@ store.on("error",()=>{
 //session 
 const sessionOptions={
   store,
-  secret:"mysecreteoption",
+  secret:process.env.SECRET,
   resave:false,
   saveUnintialized:true,
   cookie:{
