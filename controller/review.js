@@ -26,7 +26,7 @@ module.exports.createReviewData=async (req,res)=>{
         await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewID } });
         
         // Delete the review
-        let result = await Review.findByIdAndDelete(reviewID);
+        let result = await Review.findByIdAndDelete(reviewID);      
         
     
         console.log(result);

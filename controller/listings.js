@@ -3,7 +3,6 @@ const Listing=require("../models/listing");
 module.exports.index=async (req, res) => { 
     const allListings=await Listing.find({});
     res.render('listing/index.ejs',{allListings});
-     
 };
 
 
@@ -28,6 +27,7 @@ module.exports.showListings=async (req,res)=>{
      req.flash("error","Listing you requested doesn't exists");
      res.redirect("/listings");
     }
+    
     console.log(listing);
     res.render("listing/show.ejs",{listing});//rendering the view
     };
